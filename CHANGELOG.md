@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.2.0](https://github.com/rprih/app-store-scraper-mcp/compare/v0.1.2...v0.2.0) (2026-11-08)
+
+
+### ⚠ BREAKING CHANGES
+
+* tools renamed: app_details -> get_app, list_apps -> list_top_apps, developer_apps -> list_developer_apps, similar_apps -> list_similar_apps, app_reviews -> get_app_reviews, app_ratings -> get_app_ratings, app_privacy -> get_app_privacy, search_suggestions -> get_search_suggestions.
+
+### Features
+
+* add get_app_versions tool for app version history ([f648ad0](https://github.com/rprih/app-store-scraper-mcp/commit/f648ad0367a6221428fc2e01fe7ab0b2feaaa6a1))
+* rename tools to consistent verb_noun names ([1e1e00b](https://github.com/rprih/app-store-scraper-mcp/commit/1e1e00bcfd368f1c4dd18743937235852f759eef))
+
 ## [0.1.2](https://github.com/rprih/app-store-scraper-mcp/compare/v0.1.1...v0.1.2) (2026-11-08)
 
 
