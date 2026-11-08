@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.2](https://github.com/rprih/app-store-scraper-mcp/compare/v0.1.1...v0.1.2) (2026-11-08)
+
+
+### Bug Fixes
+
+* report package.json version to MCP clients instead of hardcoded 0.1.0 ([8914ae9](https://github.com/rprih/app-store-scraper-mcp/commit/8914ae99d7077022e4893101c26a1ba26daf65c8))
+
 ## [0.1.1](https://github.com/rprih/app-store-scraper-mcp/compare/v0.1.0...v0.1.1) (2026-11-08)
 
 
