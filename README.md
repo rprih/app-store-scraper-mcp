@@ -1,0 +1,63 @@
+# app-store-scraper-mcp
+
+An [MCP](https://modelcontextprotocol.io) server that exposes [`app-store-scraper`](https://github.com/facundoolano/app-store-scraper) as tools, so AI assistants can query the Apple App Store directly: app details, search, top charts, reviews, ratings, privacy labels, and keyword suggestions.
+
+## Tools
+
+| Tool | Description |
+| --- | --- |
+| `app_details` | Full app details by `id` (trackId) or `appId` (bundle id). Pass `ratings: true` to include the star histogram. |
+| `search_apps` | Search apps by term (`num`, `page`, `idsOnly`). |
+| `list_apps` | Top charts (`collection`, e.g. `TOP_FREE_IOS`, `TOP_GROSSING_IPAD`), optionally by `category` (e.g. `GAMES_PUZZLE`). |
+| `developer_apps` | All apps by a developer (`devId` = the app's `developerId`). |
+| `similar_apps` | "Customers also bought" apps. |
+| `app_reviews` | One page of reviews (pages 1–10, sort `RECENT` or `HELPFUL`). |
+| `app_ratings` | Total ratings count and 1–5 star histogram. |
+| `app_privacy` | The App Privacy ("nutrition label") details. |
+| `search_suggestions` | Search autocomplete suggestions, useful for ASO and keyword research. |
+
+Most tools accept `country` (two-letter code, default `us`) and `lang`.
+
+List-style tools (`search_apps`, `list_apps`, `developer_apps`, `similar_apps`) return a **compact** form by default: no screenshots, device lists, languages or release notes, and descriptions cut to 300 characters. This keeps responses small in the model's context. Pass `verbose: true` to get full objects.
+
+Responses are cached in memory for 5 minutes.
+
+## Fixes over upstream
+
+- **`app_ratings` / `app_details({ratings: true})`**: upstream reports `ratings: 4` for "4,041,456 Ratings" because its regex stops at the comma. This server works out the total from the histogram.
+- **`app_privacy`**: upstream is broken since Apple's apps.apple.com redesign (the token regex no longer matches). This server reads the privacy data from the page's embedded JSON (`src/privacy.ts`) and keeps the original output shape, plus a `privacyPolicyUrl` field.
+
+## Setup
+
+```bash
+npm install   # also builds to dist/
+```
+
+### Claude Code
+
+```bash
+claude mcp add app-store -- node /absolute/path/to/app-store-scraper-mcp/dist/index.js
+```
+
+### Claude Desktop / other clients
+
+```json
+{
+  "mcpServers": {
+    "app-store": {
+      "command": "node",
+      "args": ["/absolute/path/to/app-store-scraper-mcp/dist/index.js"]
+    }
+  }
+}
+```
+
+### Debugging
+
+```bash
+npm run inspect   # opens the MCP Inspector against the built server
+```
+
+## Notes
+
+This is unofficial scraping of Apple endpoints. It can break when Apple changes things, and heavy use may get rate-limited.
