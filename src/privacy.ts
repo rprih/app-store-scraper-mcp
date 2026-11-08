@@ -5,6 +5,7 @@
  *
  * Output mirrors the shape of the original library's result.
  */
+import { collectKind, fetchAppPageData } from "./app-page.js";
 
 interface RawCategory {
   identifier: string;
@@ -32,20 +33,6 @@ const mapCategory = (c: RawCategory) => ({
   dataTypes: c.dataTypes ?? [],
 });
 
-/** Collect every object with the given `$kind` anywhere in the tree. */
-function collectKind<T>(root: unknown, kind: string): T[] {
-  const out: T[] = [];
-  const seen = new Set<object>();
-  const walk = (node: unknown) => {
-    if (!node || typeof node !== "object" || seen.has(node)) return;
-    seen.add(node);
-    if ((node as { $kind?: string }).$kind === kind) out.push(node as T);
-    for (const v of Object.values(node)) walk(v);
-  };
-  walk(root);
-  return out;
-}
-
 /** The developer's privacy policy link is tagged with targetId "privacyPolicy" in action metrics. */
 function findPrivacyPolicyUrl(root: unknown): string | undefined {
   const stack: unknown[] = [root];
@@ -60,18 +47,7 @@ function findPrivacyPolicyUrl(root: unknown): string | undefined {
 }
 
 export async function privacy(opts: { id: number; country?: string }) {
-  const country = (opts.country ?? "us").toLowerCase();
-  const url = `https://apps.apple.com/${country}/app/id${opts.id}`;
-  const res = await fetch(url, { headers: { "User-Agent": "Mozilla/5.0" } });
-  if (res.status === 404) throw new Error("App not found (404)");
-  if (!res.ok) throw new Error(`Request to ${url} failed with status ${res.status}`);
-  const html = await res.text();
-
-  const match = html.match(
-    /<script[^>]*id="serialized-server-data"[^>]*>([\s\S]*?)<\/script>/,
-  );
-  if (!match) throw new Error("Could not find privacy data on the App Store page (page format changed?)");
-  const data = JSON.parse(match[1]);
+  const data = await fetchAppPageData(opts.id, opts.country);
 
   // The same PrivacyType appears in several places (summary cards and the detail page);
   // prefer the detail-page variant, which carries the full purpose breakdown.
