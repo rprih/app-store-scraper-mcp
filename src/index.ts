@@ -6,6 +6,7 @@ import { createRequire } from "node:module";
 import { z } from "zod";
 import scraper from "app-store-scraper";
 import { privacy } from "./privacy.js";
+import { versions } from "./versions.js";
 
 // Cache responses for 5 minutes to avoid hammering Apple's endpoints.
 const store = scraper.memoized({ maxAge: 5 * 60 * 1000, max: 1000 });
@@ -283,6 +284,26 @@ server.registerTool(
     annotations: readOnly,
   },
   safe(async (args) => privacy(args)),
+);
+
+server.registerTool(
+  "get_app_versions",
+  {
+    title: "Get app versions",
+    description:
+      "Get an app's version history (version number, release date, release notes), newest first. Apple lists at most the ~25 most recent versions.",
+    inputSchema: {
+      id: trackId,
+      country: z
+        .string()
+        .length(2)
+        .optional()
+        .describe("Two-letter country code (default us). Also affects release-notes language."),
+      num: z.number().int().min(1).max(100).optional().describe("Return only the N most recent versions."),
+    },
+    annotations: readOnly,
+  },
+  safe(async (args) => versions(args)),
 );
 
 server.registerTool(

@@ -14,18 +14,20 @@ An [MCP](https://modelcontextprotocol.io) server that exposes [`app-store-scrape
 | `get_app_reviews` | One page of reviews (pages 1–10, sort `RECENT` or `HELPFUL`). |
 | `get_app_ratings` | Total ratings count and 1–5 star histogram. |
 | `get_app_privacy` | The App Privacy ("nutrition label") details. |
+| `get_app_versions` | Version history: version, release date and release notes, newest first (Apple shows up to ~25). `num` limits the count. |
 | `get_search_suggestions` | Search autocomplete suggestions, useful for ASO and keyword research. |
 
 Most tools accept `country` (two-letter code, default `us`) and `lang`.
 
 List-style tools (`search_apps`, `list_top_apps`, `list_developer_apps`, `list_similar_apps`) return a **compact** form by default: no screenshots, device lists, languages or release notes, and descriptions cut to 300 characters. This keeps responses small in the model's context. Pass `verbose: true` to get full objects.
 
-Responses are cached in memory for 5 minutes.
+Responses are cached in memory for 5 minutes (`get_app_privacy` and `get_app_versions` share a cache of the app's page).
 
 ## Fixes over upstream
 
 - **`get_app_ratings` / `get_app({ratings: true})`**: upstream reports `ratings: 4` for "4,041,456 Ratings" because its regex stops at the comma. This server works out the total from the histogram.
-- **`get_app_privacy`**: upstream is broken since Apple's apps.apple.com redesign (the token regex no longer matches). This server reads the privacy data from the page's embedded JSON (`src/privacy.ts`) and keeps the original output shape, plus a `privacyPolicyUrl` field.
+- **`get_app_privacy`**: upstream is broken since Apple's apps.apple.com redesign (the token regex no longer matches). This server reads the privacy data from the page's embedded JSON (`src/privacy.ts`, shared page parsing in `src/app-page.ts`) and keeps the original output shape, plus a `privacyPolicyUrl` field.
+- **`get_app_versions`**: not available upstream (it only returns the current version). This server reads the Version History section from the same embedded page JSON (`src/versions.ts`).
 
 ## Setup
 

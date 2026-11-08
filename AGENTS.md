@@ -13,6 +13,9 @@ It is published to npm and run by clients via `npx -y app-store-scraper-mcp`.
   5-minute cache, `ok`/`fail` result wrappers, `safe()` error wrapper, `compact()`/`compactList()`
   for trimming list responses, and `fixRatings()`. The server version reported to MCP clients is read
   from `package.json` at runtime, so never hardcode it.
+- `src/app-page.ts` — fetches an apps.apple.com product page (cached 5 minutes) and extracts its
+  embedded `serialized-server-data` JSON, plus tree-walking helpers. Shared by the page parsers below.
+- `src/versions.ts` — version history (`get_app_versions`), read from the page's Version History section.
 - `src/privacy.ts` — replacement for upstream `privacy()`, which broke after Apple's apps.apple.com
   redesign. Parses the page's embedded `serialized-server-data` JSON and keeps the upstream output shape.
 - `src/app-store-scraper.d.ts` — hand-written types for the untyped upstream package. Update it when
