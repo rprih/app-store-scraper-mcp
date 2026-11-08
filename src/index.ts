@@ -114,11 +114,11 @@ const server = new McpServer({ name: "app-store-scraper", version });
 const readOnly = { readOnlyHint: true, openWorldHint: true } as const;
 
 server.registerTool(
-  "app_details",
+  "get_app",
   {
-    title: "App details",
+    title: "Get app",
     description:
-      "Get full details for an App Store app (title, description, price, rating, version, developer, screenshots…). Provide either `id` or `appId`.",
+      "Get full details for an App Store app (title, description, price, rating, current version, developer, screenshots…) in a given country storefront. Provide either `id` or `appId`. Set `ratings: true` to also get the star histogram in the same call.",
     inputSchema: {
       id: trackId.optional(),
       appId: bundleId.optional(),
@@ -142,7 +142,7 @@ server.registerTool(
   "search_apps",
   {
     title: "Search apps",
-    description: "Search the App Store for apps matching a term.",
+    description: "Search the App Store for apps matching a term, in a given country storefront (`country`, default us).",
     inputSchema: {
       term: z.string().min(1).describe("Search term."),
       num: z.number().int().min(1).max(200).optional().describe("Results per page (default 50)."),
@@ -161,11 +161,11 @@ server.registerTool(
 );
 
 server.registerTool(
-  "list_apps",
+  "list_top_apps",
   {
-    title: "Top charts",
+    title: "List top apps",
     description:
-      "Get apps from an App Store chart/collection (top free, top paid, top grossing, new…), optionally filtered by category.",
+      "Get the apps ranked in an App Store top chart (top free, top paid, top grossing, new…) for a country storefront, optionally filtered by category.",
     inputSchema: {
       collection: z
         .enum(collectionNames)
@@ -178,7 +178,7 @@ server.registerTool(
       fullDetail: z
         .boolean()
         .optional()
-        .describe("Do an extra lookup to return full app attributes like app_details."),
+        .describe("Do an extra lookup to return full app attributes like get_app."),
       verbose,
     },
     annotations: readOnly,
@@ -194,10 +194,10 @@ server.registerTool(
 );
 
 server.registerTool(
-  "developer_apps",
+  "list_developer_apps",
   {
-    title: "Developer apps",
-    description: "List all apps published by a developer, given the developer's iTunes artistId.",
+    title: "List developer apps",
+    description: "List all apps published by a developer, given the developer's iTunes artistId (the `developerId` field returned by get_app).",
     inputSchema: {
       devId: z
         .number()
@@ -214,11 +214,11 @@ server.registerTool(
 );
 
 server.registerTool(
-  "similar_apps",
+  "list_similar_apps",
   {
-    title: "Similar apps",
+    title: "List similar apps",
     description:
-      "Get the 'customers also bought' / similar apps shown on an app's page. Provide either `id` or `appId`.",
+      "List the 'customers also bought' / similar apps shown on an app's page. Provide either `id` or `appId`.",
     inputSchema: {
       id: trackId.optional(),
       appId: bundleId.optional(),
@@ -235,11 +235,11 @@ server.registerTool(
 );
 
 server.registerTool(
-  "app_reviews",
+  "get_app_reviews",
   {
-    title: "App reviews",
+    title: "Get app reviews",
     description:
-      "Get a page of user reviews for an app (up to 10 pages of ~50 reviews). Provide either `id` or `appId`.",
+      "Get a page of written user reviews for an app from one country storefront (up to 10 pages of ~50 reviews). Provide either `id` or `appId`.",
     inputSchema: {
       id: trackId.optional(),
       appId: bundleId.optional(),
@@ -256,10 +256,11 @@ server.registerTool(
 );
 
 server.registerTool(
-  "app_ratings",
+  "get_app_ratings",
   {
-    title: "App ratings",
-    description: "Get the total ratings count and 1–5 star histogram for an app.",
+    title: "Get app ratings",
+    description:
+      "Get only the total ratings count and 1–5 star histogram for an app in a country storefront. Lighter than get_app when you need nothing else.",
     inputSchema: { id: trackId, country },
     annotations: readOnly,
   },
@@ -267,10 +268,10 @@ server.registerTool(
 );
 
 server.registerTool(
-  "app_privacy",
+  "get_app_privacy",
   {
-    title: "App privacy",
-    description: "Get the App Privacy ('nutrition label') details for an app.",
+    title: "Get app privacy",
+    description: "Get the App Privacy ('nutrition label') details for an app: data types collected, linked to the user, or used for tracking.",
     inputSchema: {
       id: trackId,
       country: z
@@ -285,9 +286,9 @@ server.registerTool(
 );
 
 server.registerTool(
-  "search_suggestions",
+  "get_search_suggestions",
   {
-    title: "Search suggestions",
+    title: "Get search suggestions",
     description:
       "Get up to 50 App Store search autocomplete suggestions for a term. Useful for keyword/ASO research.",
     inputSchema: { term: z.string().min(1).describe("Partial search term."), country },
