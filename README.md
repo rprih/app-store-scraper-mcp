@@ -29,14 +29,12 @@ Responses are cached in memory for 5 minutes.
 
 ## Setup
 
-```bash
-npm install   # also builds to dist/
-```
+No install needed: clients run it with `npx`. Requires Node.js 18+.
 
 ### Claude Code
 
 ```bash
-claude mcp add app-store -- node /absolute/path/to/app-store-scraper-mcp/dist/index.js
+claude mcp add app-store -- npx -y app-store-scraper-mcp
 ```
 
 ### Claude Desktop / other clients
@@ -45,11 +43,19 @@ claude mcp add app-store -- node /absolute/path/to/app-store-scraper-mcp/dist/in
 {
   "mcpServers": {
     "app-store": {
-      "command": "node",
-      "args": ["/absolute/path/to/app-store-scraper-mcp/dist/index.js"]
+      "command": "npx",
+      "args": ["-y", "app-store-scraper-mcp"]
     }
   }
 }
+```
+
+### From source
+
+```bash
+git clone https://github.com/rprih/app-store-scraper-mcp.git && cd app-store-scraper-mcp
+npm install && npm run build
+claude mcp add app-store -- node "$PWD/dist/index.js"
 ```
 
 ### Debugging

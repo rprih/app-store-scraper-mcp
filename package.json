@@ -8,15 +8,17 @@
     "start": "node dist/index.js",
     "dev": "tsc --watch",
     "inspect": "npx @modelcontextprotocol/inspector node dist/index.js",
-    "prepare": "npm run build"
+    "prepublishOnly": "npm run build"
   },
   "keywords": [
     "mcp",
     "app-store",
     "itunes",
-    "scraper"
+    "scraper",
+    "model-context-protocol",
+    "aso"
   ],
-  "author": "",
+  "author": "Roman Prikhodko",
   "license": "MIT",
   "type": "module",
   "dependencies": {
@@ -36,5 +38,13 @@
   ],
   "engines": {
     "node": ">=18"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rprih/app-store-scraper-mcp.git"
+  },
+  "homepage": "https://github.com/rprih/app-store-scraper-mcp#readme",
+  "bugs": {
+    "url": "https://github.com/rprih/app-store-scraper-mcp/issues"
   }
 }
