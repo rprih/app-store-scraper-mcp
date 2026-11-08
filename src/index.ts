@@ -2,6 +2,7 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import type { CallToolResult } from "@modelcontextprotocol/sdk/types.js";
+import { createRequire } from "node:module";
 import { z } from "zod";
 import scraper from "app-store-scraper";
 import { privacy } from "./privacy.js";
@@ -105,7 +106,10 @@ function safe<A>(fn: (args: A) => Promise<unknown>) {
 
 // ---------- server ----------
 
-const server = new McpServer({ name: "app-store-scraper", version: "0.1.0" });
+// Report the published package version (package.json is always shipped to npm; release-please bumps it).
+const { version } = createRequire(import.meta.url)("../package.json") as { version: string };
+
+const server = new McpServer({ name: "app-store-scraper", version });
 
 const readOnly = { readOnlyHint: true, openWorldHint: true } as const;
 
