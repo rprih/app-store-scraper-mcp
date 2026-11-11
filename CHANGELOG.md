@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.3.0](https://github.com/rprih/app-store-scraper-mcp/compare/v0.2.0...v0.3.0) (2026-11-11)
+
+
+### Features
+
+* add output schemas and enrich tool definitions for TDQS ([7dadeb3](https://github.com/rprih/app-store-scraper-mcp/commit/7dadeb321af71f659d720e66ce9fcffd201179cf))
+* add output schemas and enrich tool definitions for TDQS ([d52cfdb](https://github.com/rprih/app-store-scraper-mcp/commit/d52cfdb1db304a25ff260f509e833feb5c2ed6cf))
+
 ## [0.2.0](https://github.com/rprih/app-store-scraper-mcp/compare/v0.1.2...v0.2.0) (2026-11-08)
 
 
