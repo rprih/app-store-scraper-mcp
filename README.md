@@ -7,17 +7,17 @@ An [MCP](https://modelcontextprotocol.io) server that exposes [`app-store-scrape
 | Tool | Description |
 | --- | --- |
 | `get_app` | Full app details by `id` (trackId) or `appId` (bundle id). Pass `ratings: true` to include the star histogram. |
-| `search_apps` | Search apps by term (`num`, `page`, `idsOnly`). |
-| `list_top_apps` | Top charts (`collection`, e.g. `TOP_FREE_IOS`, `TOP_GROSSING_IPAD`), optionally by `category` (e.g. `GAMES_PUZZLE`). |
-| `list_developer_apps` | All apps by a developer (`devId` = the app's `developerId`). |
-| `list_similar_apps` | "Customers also bought" apps. |
-| `get_app_reviews` | One page of reviews (pages 1–10, sort `RECENT` or `HELPFUL`). |
+| `search_apps` | Search apps by term (`num`, `page`, `idsOnly`). Returns `{ results }`. |
+| `list_top_apps` | Top charts (`collection`, e.g. `TOP_FREE_IOS`, `TOP_GROSSING_IPAD`), optionally by `category` (e.g. `GAMES_PUZZLE`). Returns `{ results }`. |
+| `list_developer_apps` | All apps by a developer (`devId` = the app's `developerId`). Returns `{ results }`. |
+| `list_similar_apps` | "Customers also bought" apps. Returns `{ results }`. |
+| `get_app_reviews` | One page of reviews (pages 1–10, sort `RECENT` or `HELPFUL`). Returns `{ results }`. |
 | `get_app_ratings` | Total ratings count and 1–5 star histogram. |
-| `get_app_privacy` | The App Privacy ("nutrition label") details. |
-| `get_app_versions` | Version history: version, release date and release notes, newest first (Apple shows up to ~25). `num` limits the count. |
-| `get_search_suggestions` | Search autocomplete suggestions, useful for ASO and keyword research. |
+| `get_app_privacy` | The App Privacy ("nutrition label") details and `privacyPolicyUrl`. |
+| `get_app_versions` | Version history: version, release date and release notes, newest first (Apple shows up to ~25). `num` limits the count. Returns `{ results }`. |
+| `get_search_suggestions` | Search autocomplete suggestions, useful for ASO and keyword research. Returns `{ results }`. |
 
-Most tools accept `country` (two-letter code, default `us`) and `lang`.
+Most tools accept `country` (two-letter code, default `us`) and `lang`. Every tool declares structured `inputSchema` and `outputSchema` definitions (returning both text JSON and `structuredContent`) along with MCP read-only/idempotent annotations.
 
 List-style tools (`search_apps`, `list_top_apps`, `list_developer_apps`, `list_similar_apps`) return a **compact** form by default: no screenshots, device lists, languages or release notes, and descriptions cut to 300 characters. This keeps responses small in the model's context. Pass `verbose: true` to get full objects.
 
