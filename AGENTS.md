@@ -9,10 +9,11 @@ Guidance for AI coding agents working in this repository.
 It is published to npm and run by clients via `npx -y app-store-scraper-mcp`.
 
 - `src/index.ts` — server entry point (has a `#!` shebang; it is the `bin`). Registers all tools with
-  `server.registerTool(...)`, using `zod` schemas for inputs. Holds the shared helpers: in-memory
+  `server.registerTool(...)`, using `zod` schemas for inputs and outputs. Holds the shared helpers: in-memory
   5-minute cache, `ok`/`fail` result wrappers, `safe()` error wrapper, `compact()`/`compactList()`
   for trimming list responses, and `fixRatings()`. The server version reported to MCP clients is read
   from `package.json` at runtime, so never hardcode it.
+- `src/schemas.ts` — shared `zod` input parameter schemas and structured `outputSchema` definitions for all tools.
 - `src/app-page.ts` — fetches an apps.apple.com product page (cached 5 minutes) and extracts its
   embedded `serialized-server-data` JSON, plus tree-walking helpers. Shared by the page parsers below.
 - `src/versions.ts` — version history (`get_app_versions`), read from the page's Version History section.
